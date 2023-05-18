@@ -1,0 +1,22 @@
+---
+- name: Check CA Directory installation
+  vars:
+    ansible_ssh_private_key_file: ~/.ssh/ansible_id_rsa
+  hosts: directory_servers
+  gather_facts: false
+  tasks:
+    - name: Verify dsa user
+      ansible.builtin.command:
+        argv:
+          - id
+          - dsa
+      changed_when: false
+    - name: Verify that CA Directory is running
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - status
+          - dxserver
+      register: dxserver_status
+      failed_when: dxserver_status['rc'] != 0
+      changed_when: false
